@@ -78,12 +78,12 @@ RISK:
             {
               type: "input_image",
               image_url: image,
-              detail: "high"
+              detail: "low"
             }
           ]
         }
       ],
-      max_output_tokens: 1200
+      max_output_tokens: 600
     });
 
     return send(res, 200, {
