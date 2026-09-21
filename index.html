@@ -1,0 +1,451 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+    <meta name="theme-color" content="#020617">
+    <title>QUANTUM AI VISION — 24/7 Autopilot Trading Suite</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Share+Tech+Mono&family=Exo+2:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg: #020617;
+            --surface: #0f172a;
+            --panel: #1e293b;
+            --border: #334155;
+            --accent: #38bdf8;
+            --accent2: #a855f7;
+            --green: #22c55e;
+            --red: #ef4444;
+            --yellow: #eab308;
+            --text: #f8fafc;
+            --dim: #94a3b8;
+            --glow: 0 0 25px rgba(56, 189, 248, 0.3);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-user-select: none; user-select: none; }
+
+        body {
+            background: linear-gradient(135deg, var(--bg) 0%, var(--surface) 50%, var(--panel) 100%);
+            background-attachment: fixed;
+            color: var(--text);
+            font-family: 'Exo 2', sans-serif;
+            min-height: 100vh;
+            padding-bottom: 25px;
+        }
+
+        .container { max-width: 900px; margin: 0 auto; padding: 15px; position: relative; z-index: 2; }
+
+        header { text-align: center; padding: 25px 0 15px; }
+        .logo-ring {
+            width: 75px; height: 75px; margin: 0 auto 12px;
+            position: relative; display: flex; align-items: center; justify-content: center;
+        }
+        .logo-ring::before, .logo-ring::after {
+            content: ''; position: absolute; border-radius: 50%;
+            border: 2px solid var(--accent); animation: orbit 3s linear infinite;
+        }
+        .logo-ring::before { width: 75px; height: 75px; opacity: .4; }
+        .logo-ring::after { width: 50px; height: 50px; border-color: var(--accent2); animation-duration: 2s; animation-direction: reverse; }
+        .logo-icon { font-size: 26px; z-index: 1; }
+        @keyframes orbit { to { transform: rotate(360deg); } }
+
+        h1 {
+            font-family: 'Orbitron', sans-serif; font-size: clamp(14px, 3.5vw, 21px);
+            color: var(--accent); text-shadow: var(--glow); text-transform: uppercase; letter-spacing: 1.5px;
+        }
+        .subtitle { font-family: 'Share Tech Mono', monospace; font-size: 9px; color: var(--dim); margin-top: 6px; letter-spacing: 2px; }
+
+        /* AUTH SECTION */
+        .auth-section {
+            background: var(--panel); border: 1px solid var(--accent);
+            padding: 20px; border-radius: 14px; margin-bottom: 20px;
+            display: flex; gap: 10px; align-items: center; box-shadow: var(--glow);
+        }
+        .auth-section input {
+            flex: 1; padding: 12px; background: var(--bg);
+            border: 1px solid var(--border); color: var(--text);
+            border-radius: 8px; font-family: 'Share Tech Mono', monospace; text-align: center; letter-spacing: 3px; font-size: 1.1em;
+        }
+        .auth-section button {
+            background: linear-gradient(135deg, rgba(56,189,248,0.2), rgba(168,85,247,0.2));
+            color: var(--accent); border: 1px solid var(--accent);
+            padding: 12px 20px; border-radius: 8px; font-weight: bold; cursor: pointer; font-family: 'Orbitron', sans-serif;
+        }
+        .locked-content { display: block !important; }
+        #mainContent { display: block !important; }
+
+        .system-status-bar {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 15px;
+        }
+        .status-box {
+            background: rgba(56, 189, 248, 0.05); border: 1px solid var(--accent);
+            border-radius: 10px; padding: 10px;
+            font-family: 'Share Tech Mono', monospace; font-size: 10px; text-align: center; color: var(--accent);
+        }
+
+        .card { background: var(--panel); border-radius: 14px; padding: 18px; margin-bottom: 15px; border: 1px solid var(--border); }
+        .card h2 { color: var(--accent); font-size: 1em; margin-bottom: 14px; border-bottom: 1px solid var(--border); padding-bottom: 8px; font-family: 'Orbitron', sans-serif; display: flex; align-items: center; gap: 8px; }
+
+        .upload-label {
+            display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px;
+            padding: 45px 15px; background: rgba(56,189,248,0.03);
+            border: 2px dashed rgba(56,189,248,0.4); border-radius: 12px; cursor: pointer; transition: 0.3s; text-align: center;
+        }
+        .upload-label:hover { border-color: var(--accent); background: rgba(56,189,248,0.06); }
+        #chartImage { display: none; }
+        .image-preview { width: 100%; max-height: 280px; border-radius: 8px; border: 1px solid var(--accent); display: none; object-fit: contain; margin-bottom: 12px; background: #000; padding: 4px; }
+
+        .btn { padding: 14px; border: none; border-radius: 8px; font-size: 0.9em; font-weight: 700; cursor: pointer; width: 100%; font-family: 'Orbitron', sans-serif; transition: 0.3s; margin-bottom: 8px; letter-spacing: 1px; }
+        .btn-primary { background: linear-gradient(135deg, var(--accent) 0%, #0284c7 100%); color: #000; box-shadow: var(--glow); }
+        .btn-primary:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+        .btn-danger { background: rgba(239,68,68,0.1); color: var(--red); border: 1px solid var(--red); }
+
+        .analysis-result { display: none; }
+        .analysis-result.active { display: block; animation: fadeIn 0.5s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .signal-box { background: rgba(34, 197, 94, 0.08); border: 2px solid var(--green); border-radius: 12px; padding: 20px; text-align: center; margin: 15px 0; }
+        .signal-box.rejected { background: rgba(239, 68, 68, 0.08); border-color: var(--red); }
+        .signal-box.neutral { background: rgba(234, 179, 8, 0.08); border-color: var(--yellow); }
+        .signal-text { font-size: 1.3em; font-weight: 900; margin: 8px 0; font-family: 'Orbitron', sans-serif; color: var(--green); }
+        .signal-box.rejected .signal-text { color: var(--red); }
+        .signal-box.neutral .signal-text { color: var(--yellow); }
+        .signal-desc { font-size: 0.85em; color: var(--text); line-height: 1.6; text-align: right; }
+
+        .metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .metric-card { background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 10px; padding: 12px; }
+        .metric-title { font-size: 9px; color: var(--dim); font-family: 'Share Tech Mono'; text-transform: uppercase; margin-bottom: 6px; }
+        .metric-val { font-size: 1.05em; font-weight: 700; color: var(--accent2); }
+
+        footer { text-align: center; padding: 20px; color: var(--dim); font-size: 9px; border-top: 1px solid var(--border); margin-top: 25px; font-family: 'Share Tech Mono', monospace; }
+
+        @media(max-width:480px) { .system-status-bar { grid-template-columns: 1fr; gap: 8px; } }
+    </style>
+    <script src="config.js"></script>
+</head>
+<body>
+    <div class="container">
+        <!-- Header -->
+        <header>
+            <div class="logo-ring"><span class="logo-icon">👁️</span></div>
+            <h1>Quantum AI Vision Engine</h1>
+            <div class="subtitle">GPT-6 Astra VISION CHART ANALYZER · REAL-TIME IMAGE ANALYSIS</div>
+        </header>
+        <!-- Main Content -->
+        <div id="mainContent" >
+            <div class="system-status-bar">
+                <div class="status-box" id="tunisClockBox">⏱️ جاري المزامنة...</div>
+                <div class="status-box" style="color: var(--green); border-color: var(--green);">🟢 محرك الرؤية يعمل (7/24)</div>
+            </div>
+
+            <!-- Image Upload (The Only Input Needed) -->
+            <div class="card">
+                <h2>📈 ارفع صورة الشارت للتحليل الآلي الكامل</h2>
+                <div class="upload-label" id="dropZone" onclick="document.getElementById('chartImage').click()">
+                    <div style="font-size: 3em;">📂</div>
+                    <div style="font-weight: 600; font-size: 0.95em;">اسحب صورة الشارت هنا أو اضغط للاختيار</div>
+                    <div style="font-size: 0.75em; color: var(--dim);">المحرك سيقوم بمعالجة الشموع، الزخم، وجميع المؤشرات الفنية تلقائياً دون أي إدخال يدوي</div>
+                </div>
+                <input type="file" id="chartImage" accept="image/*" onchange="handleFile(event)">
+                <img id="imagePreview" class="image-preview" alt="معاينة الشارت">
+                
+                <div id="connectionHint" style="margin-top:8px;font-size:12px;opacity:.72;line-height:1.6;">🔐 الاتصال الآمن يتم عبر Backend API — لا تضع مفتاح OpenAI داخل الصفحة.</div></div>
+                <button class="btn btn-primary" id="analyzeBtn" onclick="runAutonomousAnalysis()" disabled>⚡ بدء التحليل الخوارزمي الذكي الشامل</button>
+                <button class="btn btn-danger" onclick="resetForm()">🔄 إعادة تعيين الشارت</button>
+            </div>
+
+            <!-- Results Section -->
+            <div class="analysis-result" id="resultCard">
+                <div class="card">
+                    <h2>🎯 مخرجات التحليل الخوارزمي المستقل</h2>
+                    
+                    <div id="signalBox" class="signal-box">
+                        <div style="font-size: 2.8em;" id="signalIcon">🚀</div>
+                        <div class="signal-text" id="signalTitle">CALL / شراء مؤكد</div>
+                        <div class="signal-desc" id="signalDesc">جاري استخراج المعطيات...</div>
+                    </div>
+
+                    <div class="metrics-grid">
+                        <div class="metric-card">
+                            <div class="metric-title">تحليل الزخم (SAR & V-Bounce)</div>
+                            <div class="metric-val" id="resMomentum">--</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-title">دورة اتجاه الأسعار (Aroon)</div>
+                            <div class="metric-val" id="resTrend">--</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-title">فلاتر القوة (ADX / RSI)</div>
+                            <div class="metric-val" id="resFilters">--</div>
+                        </div>
+                        <div class="metric-card">
+                            <div class="metric-title">القرار الخوارزمي النهائي</div>
+                            <div class="metric-val" id="resFinalDecision">--</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <footer>
+            <p>QUANTUM AI VISION SUITE · TUNIS TIMEZONE</p>
+            <p style="margin-top: 4px;">يعمل بذكاء استدلالي خوارزمي كامل على مدار الساعة (7/24) 🛡️</p>
+        </footer>
+    </div>
+
+    <script>
+        // توقيت تونس
+        function updateTunisClock() {
+            const box = document.getElementById('tunisClockBox');
+            if (!box) return;
+            try {
+                const now = new Date().toLocaleTimeString('en-GB', {
+                    timeZone: 'Africa/Tunis',
+                    hour12: false
+                });
+                box.innerHTML = `⏱️ توقيت تونس: <strong>${now}</strong>`;
+            } catch (e) {
+                box.textContent = '⏱️ توقيت تونس';
+            }
+        }
+        updateTunisClock();
+        setInterval(updateTunisClock, 1000);
+        function handleFile(e) {
+            const file = e.target.files && e.target.files[0];
+            const btn = document.getElementById('analyzeBtn');
+            const img = document.getElementById('imagePreview');
+            const drop = document.getElementById('dropZone');
+
+            if (!file) {
+                btn.disabled = true;
+                return;
+            }
+
+            if (!file.type.startsWith('image/')) {
+                alert('الرجاء اختيار صورة شارت صحيحة.');
+                e.target.value = '';
+                btn.disabled = true;
+                return;
+            }
+
+            const reader = new FileReader();
+
+            reader.onload = function(event) {
+                img.onload = function() {
+                    img.style.display = 'block';
+                    drop.style.display = 'none';
+                    btn.disabled = false;
+                    btn.textContent = '⚡ بدء تحليل GPT-6 Astra للشارت';
+                };
+                img.src = event.target.result;
+            };
+
+            reader.onerror = function() {
+                alert('تعذر تحميل صورة الشارت.');
+                btn.disabled = true;
+            };
+
+            reader.readAsDataURL(file);
+        }
+
+        function resetForm() {
+            const input = document.getElementById('chartImage');
+            const img = document.getElementById('imagePreview');
+            const drop = document.getElementById('dropZone');
+            const btn = document.getElementById('analyzeBtn');
+            const result = document.getElementById('resultCard');
+
+            input.value = '';
+            img.src = '';
+            img.style.display = 'none';
+            drop.style.display = 'flex';
+            btn.disabled = true;
+            btn.textContent = '⚡ بدء التحليل بالذكاء الاصطناعي';
+            result.classList.remove('active');
+        }
+
+        function getBackendUrl() {
+            const configured = (window.QUANTUM_CONFIG?.API_BASE_URL || '').trim();
+            if (!configured || configured.includes('YOUR-BACKEND')) {
+                throw new Error('لم يتم ضبط رابط Backend API بعد. افتح frontend/config.js وضع رابط الـBackend.');
+            }
+            return configured.replace(/\/$/, '');
+        }
+
+        function fileToDataURL(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = () => reject(new Error('تعذر قراءة صورة الشارت.'));
+                reader.readAsDataURL(file);
+            });
+        }
+
+        async function runAutonomousAnalysis() {
+            const btn = document.getElementById('analyzeBtn');
+            const fileInput = document.getElementById('chartImage');
+            const file = fileInput && fileInput.files ? fileInput.files[0] : null;
+            if (!file) {
+                alert('ارفع صورة الشارت أولاً.');
+                return;
+            }
+
+            let backendUrl;
+            try {
+                backendUrl = getBackendUrl();
+            } catch (e) {
+                alert(e.message);
+                btn.disabled = false;
+                return;
+            }
+
+            btn.disabled = true;
+            btn.textContent = '🤖 GPT-6 Astra يقرأ الشارت الآن...';
+
+            try {
+                const dataUrl = await fileToDataURL(file);
+
+                const prompt = `
+أنت محلل تقني بصري. حلل صورة الشارت المرفقة فقط اعتماداً على ما يظهر فعلياً.
+لا تخترع أرقاماً أو مؤشرات غير ظاهرة. إذا كان شيء غير واضح اكتب "غير واضح".
+افحص الشموع الأخيرة، الاتجاه، الزخم، الدعم والمقاومة، وParabolic SAR وAroon وADX وRSI وMACD إذا كانت ظاهرة.
+
+أعطني النتيجة بهذا الشكل:
+SIGNAL: CALL أو PUT أو NO TRADE
+CONFIDENCE: رقم 0-100
+MOMENTUM: وصف مختصر
+TREND: وصف مختصر
+FILTERS: وصف مختصر
+SUPPORT_RESISTANCE: وصف مختصر
+REASON: سبب القرار
+RISK: مستوى المخاطرة
+
+إذا كانت الصورة غير كافية، اجعل SIGNAL = NO TRADE وCONFIDENCE = 0.
+القرار تحليلي احتمالي وليس ضماناً للنتيجة.
+`;
+
+                // The browser calls our backend only. The OpenAI API key never reaches GitHub Pages.
+                const response = await fetch(backendUrl + '/api/analyze', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        image: dataUrl,
+                        prompt
+                    })
+                });
+
+                const raw = await response.text();
+                let data = {};
+                try { data = JSON.parse(raw); } catch (_) {}
+
+                if (!response.ok) {
+                    throw new Error(data?.error || `Backend HTTP ${response.status}`);
+                }
+
+                const text = data?.output_text || '';
+                if (!text) throw new Error('لم يرجع Backend أي نتيجة من نموذج الرؤية.');
+
+                renderGPTResult(text);
+
+            } catch (error) {
+                console.error('Quantum AI Vision error:', error);
+
+                const msg = String(error?.message || error || 'خطأ غير معروف');
+                const localFile = location.protocol === 'file:' ||
+                                  location.protocol === 'content:' ||
+                                  location.origin === 'null';
+
+                if (localFile && msg === 'Failed to fetch') {
+                    alert(
+                        'تعذر الاتصال بـ OpenAI لأن الصفحة مفتوحة كملف محلي (content:// أو file://).\\n\\n' +
+                        'الحل: افتح التطبيق من رابط HTTPS/موقع ويب، وليس من ملف التنزيلات مباشرة.\\n\\n' +
+                        'ملاحظة: مفتاح API لا يجب وضعه داخل موقع عام.'
+                    );
+                } else if (msg === 'Failed to fetch') {
+                    alert(
+                        'تعذر الوصول إلى OpenAI API.\\n\\n' +
+                        'تحقق من الإنترنت، مفتاح API، وإتاحة gpt-6-astra لحساب API.'
+                    );
+                } else {
+                    alert('تعذر تحليل الشارت: ' + msg);
+                }
+            } finally {
+                btn.disabled = false;
+                btn.textContent = '⚡ تحليل الشارت مرة أخرى';
+            }
+        }
+
+        function parseField(text, name) {
+            const re = new RegExp('^' + name + '\\s*:\\s*(.+)$', 'im');
+            const match = text.match(re);
+            return match ? match[1].trim() : 'غير واضح';
+        }
+
+        function renderGPTResult(text) {
+            const signalRaw = parseField(text, 'SIGNAL').toUpperCase();
+            const confidence = parseField(text, 'CONFIDENCE');
+            const momentum = parseField(text, 'MOMENTUM');
+            const trend = parseField(text, 'TREND');
+            const filters = parseField(text, 'FILTERS');
+            const sr = parseField(text, 'SUPPORT_RESISTANCE');
+            const reason = parseField(text, 'REASON');
+            const risk = parseField(text, 'RISK');
+
+            let type = 'neutral';
+            let icon = '⚖️';
+            let title = 'NO TRADE / انتظار';
+
+            if (signalRaw.includes('CALL')) {
+                type = 'call';
+                icon = '📈';
+                title = 'CALL / إشارة صعود';
+            } else if (signalRaw.includes('PUT')) {
+                type = 'put';
+                icon = '📉';
+                title = 'PUT / إشارة هبوط';
+            }
+
+            const box = document.getElementById('signalBox');
+            box.className = type === 'call'
+                ? 'signal-box'
+                : type === 'put'
+                    ? 'signal-box rejected'
+                    : 'signal-box neutral';
+
+            document.getElementById('signalIcon').textContent = icon;
+            document.getElementById('signalTitle').textContent = title;
+
+            document.getElementById('signalDesc').innerHTML =
+                '<strong>الثقة:</strong> ' + escapeHtml(confidence) + '%<br>' +
+                '<strong>الدعم والمقاومة:</strong> ' + escapeHtml(sr) + '<br>' +
+                '<strong>السبب:</strong> ' + escapeHtml(reason) + '<br>' +
+                '<strong>المخاطر:</strong> ' + escapeHtml(risk);
+
+            document.getElementById('resMomentum').textContent = momentum;
+            document.getElementById('resTrend').textContent = trend;
+            document.getElementById('resFilters').textContent = filters;
+            document.getElementById('resFinalDecision').textContent = signalRaw;
+
+            document.getElementById('resultCard').classList.add('active');
+            document.getElementById('resultCard').scrollIntoView({
+                behavior: 'smooth',
+                block: 'start'
+            });
+        }
+
+        function escapeHtml(value) {
+            return String(value).replace(/[&<>"']/g, function(c) {
+                return {
+                    '&': '&amp;',
+                    '<': '&lt;',
+                    '>': '&gt;',
+                    '"': '&quot;',
+                    "'": '&#039;'
+                }[c];
+            });
+        }
+    </script>
+</body>
+</html>

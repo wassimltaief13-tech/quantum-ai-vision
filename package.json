@@ -1,0 +1,11 @@
+{
+  "name": "quantum-ai-vision-api",
+  "version": "1.0.0",
+  "private": true,
+  "engines": {
+    "node": ">=20"
+  },
+  "dependencies": {
+    "openai": "^6.0.0"
+  }
+}
