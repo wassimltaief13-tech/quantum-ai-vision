@@ -273,12 +273,48 @@
         }
 
         function fileToDataURL(file) {
-            return new Promise((resolve, reject) => {
-                const reader = new FileReader();
-                reader.onload = () => resolve(reader.result);
-                reader.onerror = () => reject(new Error('تعذر قراءة صورة الشارت.'));
-                reader.readAsDataURL(file);
-            });
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      const img = new Image();
+
+      img.onload = () => {
+        const MAX_SIZE = 1600;
+
+        let width = img.naturalWidth;
+        let height = img.naturalHeight;
+
+        if (width > MAX_SIZE || height > MAX_SIZE) {
+          const scale = Math.min(MAX_SIZE / width, MAX_SIZE / height);
+          width = Math.round(width * scale);
+          height = Math.round(height * scale);
+        }
+
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+
+        const ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+
+        // ضغط الصورة قبل إرسالها للـ Backend
+        resolve(canvas.toDataURL('image/jpeg', 0.82));
+      };
+
+      img.onerror = () => {
+        reject(new Error('تعذر معالجة الصورة'));
+      };
+
+      img.src = reader.result;
+    };
+
+    reader.onerror = () => {
+      reject(new Error('تعذر قراءة الصورة'));
+    };
+
+    reader.readAsDataURL(file);
+  });
         }
 
         async function runAutonomousAnalysis() {
